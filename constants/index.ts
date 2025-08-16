@@ -32,13 +32,13 @@ export const navLinks = [
     title: "navRentals",
     url: "/properties?dealType=Rental",
     children: [
-      /*{
-        title: "touristRental",
-        url: "/properties?dealType=Tourist%20Rental",
-      },*/
-
       {
         title: "touristRental",
+        url: "/properties?dealType=Tourist%20Rental",
+      },
+
+      {
+        title: "AirbndRental",
         url: "/services"
       },
 
