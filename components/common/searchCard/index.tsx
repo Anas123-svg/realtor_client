@@ -361,72 +361,115 @@ const SearchCard: React.FC<SearchCardProps> = ({ onSearchComplete }) => {
 
 
   return (
-    <div className="bg-white  gap-3 px-6 py-8 border rounded-[20px]  flex justify-between items-center w-full shadow-lg sticky top-10 z-20">
+    <div className="bg-white gap-2 sm:gap-3 px-3 sm:px-6 py-4 sm:py-8 border rounded-[20px] flex flex-col sm:flex-row sm:justify-between sm:items-center w-full shadow-lg sticky top-10 z-20">
       {/* // <div className="bg-white border rounded-md px-4 py-10 shadow-sm w-full sticky top-10 z-20"> */}
 
 
 
       {/* import { Check } from "lucide-react"; // icon for the tick */}
 
+      <label className="w-full sm:flex-1 mb-2 sm:mb-0">
+        <Popover>
+          <PopoverTrigger asChild>
+            <button
+              type="button"
+              className="w-full flex items-center justify-between rounded-md px-2 py-1 text-left bg-white border h-10"
+            >
+              <span className="truncate">
+                {t("location")}
 
-      <label className="flex-1">
-        <Select
-          onValueChange={handleLocationChange}
-          value="" // keep empty so it doesn't overwrite with single value
-        >
-          {/* Fixed height, horizontal scroll for multiple locations */}
-          <SelectTrigger
-            className="border px-2 py-1 rounded w-full text-left h-9 overflow-x-auto whitespace-nowrap scrollbar-thin scrollbar-thumb-gray-300"
+              </span>
+              <ChevronDown className="w-4 h-4 text-gray-500 flex-shrink-0" />
+            </button>
+          </PopoverTrigger>
+
+          <PopoverContent
+            side="bottom"
+            align="start"
+            className="w-full max-w-[300px] sm:max-w-[350px] p-2 bg-white rounded-md shadow-md"
           >
-            {filters.location?.length
-              ? filters.location.length > 1
-                ? `${filters.location[0].label}...`
-                : filters.location[0].label
-              : t("location")}
+            <div className="flex flex-col gap-2 max-h-[250px] overflow-y-auto">
 
-          </SelectTrigger>
+              {/* Select All */}
+              <label
+                className="flex justify-between items-center gap-2 cursor-pointer px-2 py-1 hover:bg-gray-100 rounded font-medium"
+              >
+                <div className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    className="hidden"
+                    checked={filters.location?.length === locations.length}
+                    onChange={() => {
+                      setFilters((prev) => ({
+                        ...prev,
+                        location:
+                          filters.location?.length === locations.length
+                            ? [] // unselect all
+                            : locations, // select all
+                      }));
+                    }}
+                  />
+                  <span>{t("SelectAll")}</span>
+                </div>
+                {filters.location?.length === locations.length && (
+                  <Check className="w-4 h-4 text-green-600" />
+                )}
+              </label>
 
-          <SelectContent>
-            {locations
-              .slice()
-              .sort((a, b) => a.label.localeCompare(b.label))
-              .map((location) => {
-                const isSelected = filters.location?.some((l) => l.id === location.id);
-                return (
-                  <SelectItem
-                    key={location.id}
-                    value={location.id.toString()}
-                    // Flex layout so tick appears left of text
-                    className="flex items-center gap-2 cursor-pointer"
-                  >
-                    <div className="flex items-center gap-2 w-full">
-
-                      <span>{location.label}</span>
-                      {/* Check icon always on the left when selected */}
-                      {isSelected && (
-                        <Check className="w-4 h-4 text-black flex-shrink-0" />
-                      )}
-                    </div>
-                  </SelectItem>
-                );
-              })}
-          </SelectContent>
-        </Select>
+              {/* Locations list - sorted alphabetically */}
+              {locations
+                .slice()
+                .sort((a, b) => a.label.localeCompare(b.label))
+                .map((location) => {
+                  const isSelected = filters.location?.some((l) => l.id === location.id);
+                  return (
+                    <label
+                      key={location.id}
+                      className="flex justify-between items-center gap-2 cursor-pointer px-2 py-1 hover:bg-gray-100 rounded"
+                    >
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          className="hidden"
+                          checked={isSelected}
+                          onChange={() => {
+                            setFilters((prev) => {
+                              const current = prev.location || [];
+                              return isSelected
+                                ? {
+                                  ...prev,
+                                  location: current.filter((l) => l.id !== location.id)
+                                }
+                                : {
+                                  ...prev,
+                                  location: [...current, location]
+                                };
+                            });
+                          }}
+                        />
+                        <span>{location.label}</span>
+                      </div>
+                      {isSelected && <Check className="w-4 h-4 text-green-600" />}
+                    </label>
+                  );
+                })}
+            </div>
+          </PopoverContent>
+        </Popover>
       </label>
 
 
 
 
 
-      <label className="flex-1">
+      <label className="w-full sm:flex-1 mb-2 sm:mb-0">
         <Select
-          onValueChange={(e) => updateFilter("radius", e)}
-          disabled={location.length === 0}
+          onValueChange={(value) => updateFilter("radius", value)}
+          disabled={filters.location?.length === 0}
           value={filters.radius}
         >
-
-          <SelectTrigger className="border-none gap-2 focus:ring-0 p-0 text-base">
-            {t("radius")}
+          <SelectTrigger className="border px-2 py-1 rounded w-full text-left h-9 sm:h-10 overflow-x-auto whitespace-nowrap scrollbar-thin scrollbar-thumb-gray-300">
+            {filters.radius ? `${filters.radius} ${t("miles")}` : t("radius")}
           </SelectTrigger>
           <SelectContent>
             {RADIUS_OPTIONS.map((option) => (
@@ -436,11 +479,6 @@ const SearchCard: React.FC<SearchCardProps> = ({ onSearchComplete }) => {
             ))}
           </SelectContent>
         </Select>
-        {/* <p className="rounded-md border border-neutral-200 bg-white px-3 py-2 text-neutral-500">
-              {filters.radius
-                ? filters.radius + " " + t("miles")
-                : t("selectRadius")}
-            </p> */}
       </label>
 
       {/* price range */}
@@ -514,19 +552,18 @@ const SearchCard: React.FC<SearchCardProps> = ({ onSearchComplete }) => {
         </DropdownMenu>
       </label> */}
 
-      <label className="flex-1">
+      <label className="w-full sm:flex-1 mb-2 sm:mb-0">
         <DropdownMenu>
           <DropdownMenuTrigger
-            className="w-full border-none p-0 text-left outline-none"
+            className="w-full border px-2 py-1 rounded text-left outline-none h-10"
             aria-label="Price Range"
           >
-            <div className="flex h-10 w-full items-center justify-between py-2">
+            <div className="flex h-full w-full items-center justify-between">
               <p>{t("priceRange")}</p>
               <ChevronDown className="h-4 w-4 opacity-50" />
             </div>
           </DropdownMenuTrigger>
-
-          <DropdownMenuContent className="p-5 w-[300px]">
+          <DropdownMenuContent className="p-3 sm:p-5 w-[280px] sm:w-[300px]">
             {/* Slider */}
             <div id="range" className="mb-4">
               <RangeSlider
@@ -568,12 +605,12 @@ const SearchCard: React.FC<SearchCardProps> = ({ onSearchComplete }) => {
         </DropdownMenu>
       </label>
 
-      <label className="flex-1">
+      <label className="w-full sm:flex-1 mb-2 sm:mb-0">
         <Popover>
           <PopoverTrigger asChild>
             <button
               type="button"
-              className="w-full flex items-center justify-between rounded-md p-2 text-left bg-white"
+              className="w-full flex items-center justify-between rounded-md px-2 py-1 text-left bg-white border h-10"
             >
               <span>
                 {t("propertyType")}
@@ -651,19 +688,19 @@ const SearchCard: React.FC<SearchCardProps> = ({ onSearchComplete }) => {
 
       {/* Area Range */}
 
-      <label className="flex-1">
+      <label className="w-full sm:flex-1 mb-2 sm:mb-0">
         <DropdownMenu>
           <DropdownMenuTrigger
-            className="w-full border-none p-0 text-left outline-none"
+            className="w-full border px-2 py-1 rounded text-left outline-none h-10"
             aria-label="Area"
           >
-            <div className="flex h-10 w-full items-center justify-between py-2">
+            <div className="flex h-full w-full items-center justify-between">
               <p>{t("Area")}</p>
               <ChevronDown className="h-4 w-4 opacity-50" />
             </div>
           </DropdownMenuTrigger>
 
-          <DropdownMenuContent className="p-5 w-[300px]">
+          <DropdownMenuContent className="p-3 sm:p-5 w-[280px] sm:w-[300px]">
             {/* Slider */}
             <div id="range" className="mb-4">
               <RangeSlider
@@ -709,7 +746,7 @@ const SearchCard: React.FC<SearchCardProps> = ({ onSearchComplete }) => {
 
 
 
-{/*<label className="flex-1"> 
+      {/*<label className="flex-1"> 
 //   <Select 
 //     onValueChange={(e) =>
 //       updateFilter("beds", [e] as SearchFilters["beds"])
@@ -732,7 +769,7 @@ const SearchCard: React.FC<SearchCardProps> = ({ onSearchComplete }) => {
 //           ? filters.beds.join(", ")
 //           : t("selectBeds")}
 //       </p> */}
- {/*</label>
+      {/*</label>
 
 // <label className="flex-1">
 //   <Select
@@ -757,7 +794,7 @@ const SearchCard: React.FC<SearchCardProps> = ({ onSearchComplete }) => {
 //           ? filters.baths.join(", ")
 //           : t("selectBaths")}
 //       </p> */}
-{/*</label>
+      {/*</label>
 
 // <label className="flex-1">
 //   <Select
@@ -782,7 +819,7 @@ const SearchCard: React.FC<SearchCardProps> = ({ onSearchComplete }) => {
 //           ? filters.baths.join(", ")
 //           : t("selectBaths")}
 //       </p> */}
- {/*</label>*/}
+      {/*</label>*/}
 
 
 
@@ -794,12 +831,12 @@ const SearchCard: React.FC<SearchCardProps> = ({ onSearchComplete }) => {
 
 
       {/* Beds Filter */}
-      <label className="flex-1">
+      <label className="w-full sm:flex-1 mb-2 sm:mb-0">
         <Popover>
           <PopoverTrigger asChild>
             <button
               type="button"
-              className="flex items-center justify-between w-full h-10 px-2 bg-white rounded-md text-left text-base focus:outline-none"
+              className="w-full flex items-center justify-between rounded-md px-2 py-1 text-left bg-white border h-10"
             >
               <span className="truncate">
                 {t("beds")}
@@ -881,14 +918,14 @@ const SearchCard: React.FC<SearchCardProps> = ({ onSearchComplete }) => {
 
 
 
-            {/* Baths Filter */}
+      {/* Baths Filter */}
 
-      <label className="flex-1">
+      <label className="w-full sm:flex-1 mb-2 sm:mb-0">
         <Popover>
           <PopoverTrigger asChild>
             <button
               type="button"
-              className="flex items-center justify-between w-full h-10 px-2 bg-white rounded-md text-left text-base focus:outline-none"
+              className="w-full flex items-center justify-between rounded-md px-2 py-1 text-left bg-white border h-10"
             >
               <span className="truncate">
                 {t("baths")}
@@ -970,12 +1007,12 @@ const SearchCard: React.FC<SearchCardProps> = ({ onSearchComplete }) => {
       </label>
 
       {/* Parking Filter */}
-      <label className="flex-1">
+      <label className="w-full sm:flex-1 mb-2 sm:mb-0">
         <Popover>
           <PopoverTrigger asChild>
             <button
               type="button"
-              className="flex items-center justify-between w-full h-10 px-2 bg-white rounded-md text-left text-base focus:outline-none"
+              className="w-full flex items-center justify-between rounded-md px-2 py-1 text-left bg-white border h-10"
             >
               <span className="truncate">
                 {t("parking")}
@@ -1057,14 +1094,14 @@ const SearchCard: React.FC<SearchCardProps> = ({ onSearchComplete }) => {
 
 
 
-      <label className="flex-1">
+      <label className="w-full sm:flex-1 mb-2 sm:mb-0">
         <Select
           onValueChange={(val) =>
             updateFilter("sortBy", val as SearchFilters["sortBy"])
           }
           value={filters.sortBy}
         >
-          <SelectTrigger className="border-none gap-2 focus:ring-0 p-0 text-base">
+          <SelectTrigger className="border px-2 py-1 rounded w-full text-left h-9 sm:h-10 overflow-x-auto whitespace-nowrap scrollbar-thin scrollbar-thumb-gray-300">
             {t("sortBy")}
           </SelectTrigger>
           <SelectContent>
@@ -1080,9 +1117,9 @@ const SearchCard: React.FC<SearchCardProps> = ({ onSearchComplete }) => {
 
 
 
-      <div className="flex  flex-row w-[20%] justify-between">
+      <div className="flex flex-col sm:flex-row w-full sm:w-auto gap-2 sm:gap-3 mt-4 sm:mt-0">
         <Sheet>
-          <SheetTrigger className="w-[45%] mr-[-20px] bg-secondary rounded-md border border-neutral-200 text-white px-3 py-2 whitespace-nowrap hover:bg-secondary2 transition duration-300">
+          <SheetTrigger className="w-full sm:w-auto bg-secondary rounded-md border border-neutral-200 text-white px-3 py-2 whitespace-nowrap hover:bg-secondary2 transition duration-300">
             {t("more")}
           </SheetTrigger>
           <SheetContent >
@@ -1538,7 +1575,7 @@ const SearchCard: React.FC<SearchCardProps> = ({ onSearchComplete }) => {
         <Button
           variant="primary"
           onClick={handleSearch}
-          className="text-white text-lg px-6 rounded-md w-[45%]  "
+          className="text-white text-lg px-6 rounded-md w-full sm:w-auto"
         >
           {t("search")}
         </Button>

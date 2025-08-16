@@ -332,11 +332,7 @@ const SearchCard: React.FC = () => {
                 className="w-full flex items-center justify-between rounded-md p-2 text-left bg-white"
               >
                 <span>
-                  {filters.propertyType?.length > 0
-                    ? filters.propertyType.length === 1
-                      ? t(filters.propertyType[0])
-                      : `${t(filters.propertyType[0])} ...`
-                    : t("propertyType")}
+                  {t("propertyType")}
                 </span>
                 <ChevronDown className="w-4 h-4 text-gray-500" />
               </button>
@@ -419,11 +415,7 @@ const SearchCard: React.FC = () => {
                 className="w-full flex items-center justify-between rounded-md p-2 text-left bg-white" // removed border
               >
                 <span>
-                  {filters.location?.length > 0
-                    ? filters.location.length === 1
-                      ? locations.find((l) => l.id.toString() === filters.location[0])?.label
-                      : `${locations.find((l) => l.id.toString() === filters.location[0])?.label} ...`
-                    : t("location")}
+                  {t("location")}
                 </span>
                 <ChevronDown className="w-4 h-4 text-gray-500" />
               </button>
