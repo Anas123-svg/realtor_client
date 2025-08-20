@@ -27,6 +27,8 @@ import Form from "@/components/propertyDetails/main/form";
 import { useTranslation } from "react-i18next";
 import toast from "react-hot-toast";
 
+
+
 const page = () => {
   const { id } = useParams();
   const [property, setProperty] = useState<Property>();
@@ -67,6 +69,29 @@ const page = () => {
       console.log(error);
     }
   };
+
+
+
+  function normalizeAmenities(
+    raw: string[] | { name: string; sub_amenities: string[] }[] | null | undefined
+  ): { name: string; sub_amenities: string[] }[] {
+    if (!raw) return [];
+
+    // Case 1: Already correct format
+    if (Array.isArray(raw) && typeof raw[0] === "object") {
+      return raw as { name: string; sub_amenities: string[] }[];
+    }
+
+    // Case 2: Just a string[]
+    if (Array.isArray(raw) && typeof raw[0] === "string") {
+      return [{ name: "Amenities", sub_amenities: raw as string[] }];
+    }
+
+    return [];
+  }
+
+
+
 
   useEffect(() => {
     fetchProperty();
@@ -196,7 +221,9 @@ const page = () => {
           longitude={Number(property.location.longitude)}
           region={property.location.region}
         />
-        <Characteristics characteristics={property.amenities} />
+        <Characteristics characteristics={normalizeAmenities(property.amenities)} />
+
+
         <About property={property} />
         <div id="full-video">
           <Video photos={property.images} video={property.video} />
