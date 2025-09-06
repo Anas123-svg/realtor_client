@@ -5,12 +5,14 @@ import { Coffee } from "lucide-react";
 import { groupAmenities } from "@/lib/amenities";
 
 interface Props {
-  characteristics: string[];
+  characteristics: { name: string; sub_amenities: string[] }[]; // API format
 }
+
 
 const Characteristics: React.FC<Props> = ({ characteristics }) => {
   const { t } = useTranslation();
-  const grouped = groupAmenities(characteristics);
+  const grouped = groupAmenities(characteristics); // <-- now works
+
 
   return (
     <div className="py-10 border-y border-black">
@@ -36,7 +38,7 @@ const Characteristics: React.FC<Props> = ({ characteristics }) => {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="px-6">
-                  <ul className="list-disc marker:text-xl marker:text-black list-inside text-sm text-black ">
+                  <ul className="list-disc marker:text-xl marker:text-black list-inside text-sm text-black">
                     {cat.items.map((itm, idx) => (
                       <li key={idx}>{t(itm)}</li>
                     ))}
