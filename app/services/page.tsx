@@ -4,6 +4,9 @@ import Link from "next/link";
 import { useTranslation } from "react-i18next";
 import { FaCheck, FaTimes, FaMapMarkerAlt, FaClock, FaCamera, FaUsers, FaHome, FaTools } from "react-icons/fa";
 import { useRouter } from "next/navigation";
+import rodaderoImage from "@/assets/rodad_img1.jpg";
+import tagRod2 from "@/assets/tag_rod2.jpg";
+import palRod3 from "@/assets/pal_rod3.jpg";
 
 function SellRent() {
     const router = useRouter();
@@ -27,20 +30,20 @@ function SellRent() {
         {
             title: "Santa Marta",
             description: "Full management for apartments and houses in the city and El Rodadero",
-            image: "/Kitchen-bg.png",
+            image: rodaderoImage,
             caption: "Rodadero Beach, Santa Marta"
         },
         {
             title: "Taganga",
-            description: "Properties focused on adventure tourism and diving",
-            image: "/buddy.jpg",
-            caption: "Boats in Taganga Bay"
+            description: "Properties focused on adventure tourism and diving.",
+            image: tagRod2,
+            caption: "Taganga and nearby bays"
         },
         {
             title: "Palomino",
-            description: "Strategies for nature escapes and beach retreats",
-            image: "/white-lep.png",
-            caption: "River and beach in Palomino"
+            description: "Strategies for nature escapes and beach retreats.",
+            image: palRod3,
+            caption: "Palomino & nearby coastal towns"
         }
     ];
 
@@ -237,6 +240,11 @@ function SellRent() {
                                 <FaCheck className="text-green-500 mt-1 mr-3 flex-shrink-0" />
                                 <span className="text-gray-700">Keeping you informed with reports, photos, and online access to your property</span>
                             </div>
+                            <div className="flex items-start">
+                                <FaCheck className="text-green-500 mt-1 mr-3 flex-shrink-0" />
+                                <span className="text-gray-700">Local office for in-person customer service</span>
+                            </div>
+
                         </div>
                     </div>
                     <div className="mt-8 p-6 bg-blue-50 rounded-lg text-center">
@@ -462,11 +470,12 @@ function SellRent() {
                                 href="/properties?dealType=Rental"
                                 className="group relative h-80 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow"
                             >
-                                <img
-                                    className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300"
-                                    src={area.image}
-                                    alt={area.title}
-                                />
+<img
+  className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-300"
+  src={typeof area.image === "string" ? area.image : area.image.src}
+  alt={area.title}
+/>
+
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent">
                                     <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
                                         <h3 className="text-2xl font-bold mb-2">{area.title}</h3>
