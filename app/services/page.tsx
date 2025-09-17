@@ -4,9 +4,10 @@ import Link from "next/link";
 import { useTranslation } from "react-i18next";
 import { FaCheck, FaTimes, FaMapMarkerAlt, FaClock, FaCamera, FaUsers, FaHome, FaTools } from "react-icons/fa";
 import { useRouter } from "next/navigation";
-import rodaderoImage from "@/assets/rodad_img1.jpg";
+import rodaderoImage from "@/assets/santa.jpg";
 import tagRod2 from "@/assets/tag_rod2.jpg";
 import palRod3 from "@/assets/pal_rod3.jpg";
+import heroImage from "@/assets/img124.jpg";
 
 function SellRent() {
     const router = useRouter();
@@ -18,7 +19,7 @@ function SellRent() {
                 { name: "Professional cleaning & laundry", ptk: true, competitor: "varies" },
                 { name: "Owner Portal with reports & photos", ptk: true, competitor: "not always digital" },
                 { name: "24/7 Guest Support", ptk: true, competitor: "slow responses/bots" },
-                { name: "Multi-channel management", ptk: true, competitor: "without local adjustments" },
+                { name: "Multi-channel management", ptk: true, competitor: false },
                 { name: "In-person check-in", ptk: true, competitor: false },
                 { name: "Local maintenance network", ptk: true, competitor: false },
                 { name: "Local experience guides", ptk: true, competitor: false },
@@ -55,7 +56,7 @@ function SellRent() {
             <div className="h-20 sm:h-28" />
             <section
                 className="relative bg-cover bg-center text-white py-12 md:py-20 px-4 md:px-6"
-                style={{ backgroundImage: "url('/Kitchen-bg.png')" }}
+                style={{ backgroundImage: `url(${heroImage.src})` }}
             >
                 <div className="absolute inset-0 bg-black/50"></div>
                 <div className="relative max-w-6xl mx-auto text-center px-2">
